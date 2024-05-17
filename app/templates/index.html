@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device CRUD App - Devices List</title>
+</head>
+<body>
+    <h1>Device CRUD App - Devices List</h1>
+    
+    <!-- Add Device Button -->
+    <a href="/add_device">Add Device</a>
+
+    <!-- Devices List -->
+    <div id="devices">
+        <!-- Devices will be dynamically rendered here -->
+    </div>
+    
+    <script>
+        // Fetch and render devices on page load
+        fetchDevices();
+
+        function fetchDevices() {
+            fetch('/api/devices')
+                .then(response => response.json())
+                .then(devices => {
+                    const devicesDiv = document.getElementById('devices');
+                    devicesDiv.innerHTML = ''; // Clear previous devices
+                    devices.forEach(device => {
+                        const deviceDiv = document.createElement('div');
+                        deviceDiv.innerHTML = `
+                            <p>ID: ${device.id}, Name: ${device.name}, Status: ${device.status}</p>
+                            <a href="/edit_device/${device.id}">Edit</a>
+                            <button onclick="deleteDevice(${device.id})">Delete</button>
+                        `;
+                        devicesDiv.appendChild(deviceDiv);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function deleteDevice(deviceId) {
+            if (confirm('Are you sure you want to delete this device?')) {
+                fetch(`/api/devices/${deviceId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        fetchDevices(); // Refresh devices list
+                    } else {
+                        console.error('Failed to delete device');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        }
+    </script>
+</body>
+</html>
