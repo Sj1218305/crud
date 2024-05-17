@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device CRUD App - Add Device</title>
+</head>
+<body>
+    <h1>Device CRUD App - Add Device</h1>
+    
+    <!-- Add Device Form -->
+    <form id="add-device-form">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name"><br>
+        <label for="status">Status:</label><br>
+        <input type="text" id="status" name="status"><br><br>
+        <button type="submit">Add Device</button>
+    </form>
+
+    <script>
+        document.getElementById('add-device-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+            const formData = new FormData(this);
+            const deviceData = Object.fromEntries(formData.entries()); // Convert FormData to object
+
+            // Send POST request to add device
+            fetch('/api/devices', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(deviceData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '/'; // Redirect to devices list after adding device
+                } else {
+                    console.error('Failed to add device');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
